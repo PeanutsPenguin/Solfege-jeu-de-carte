@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 //Utilisation des evenements deja creer par unity afin de gerer le Drag and Drop des carte notes
-public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     private RectTransform m_RectTransform;
     private CanvasGroup m_CanvasGroup;
@@ -26,7 +26,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
     //Pendant le drag
     public void OnDrag(PointerEventData eventData)
     {
-        //Prends le delta du drag et bouge l'image 
+        //Prends le delta du drag et bouge l'image en fonction du canva
         m_RectTransform.anchoredPosition += eventData.delta / m_Canvas.scaleFactor;
 
     }
@@ -34,6 +34,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
     //A la fin du drag
     public void OnEndDrag(PointerEventData eventData)
     {
+        //Remet l'image a la normal
         m_CanvasGroup.alpha = 1;
         m_CanvasGroup.blocksRaycasts = true;
     }
@@ -41,13 +42,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
     //Au moment du clic sur l'objet 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Clic on Object");
-    }
-
-    //Au moment du drop
-    public void OnDrop(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
+        
     }
 
     public E_NOTE getNote()
