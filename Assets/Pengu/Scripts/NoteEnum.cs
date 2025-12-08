@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public enum E_NOTE
+public enum E_NOTE : int
 {
-    E_DO, 
+    E_DO = 0, 
     E_RE,
     E_MI, 
     E_FA, 
