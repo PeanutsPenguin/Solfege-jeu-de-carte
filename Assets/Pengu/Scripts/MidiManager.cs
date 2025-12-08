@@ -146,7 +146,7 @@ public class MidiManager : MonoBehaviour
 		float Ypos = YDoNotePosition + (spaceBetweenNotePlayer * (int)note);
         noteVisual.GetComponent<RectTransform>().anchoredPosition = new Vector3(500, Ypos, 0);
 		noteVisual.GetComponent<MusicNoteScript>().note = note;
-        noteVisual.GetComponent<MusicNoteScript>().canvas = mainCanva;
+        //noteVisual.GetComponent<MusicNoteScript>().canvas = mainCanva;
     }
 
     #region GETTER 

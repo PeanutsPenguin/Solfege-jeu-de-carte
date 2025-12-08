@@ -1,4 +1,7 @@
+using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
@@ -6,40 +9,47 @@ public class MusicNoteScript : MonoBehaviour
 {
     private RectTransform m_RectTransform;
     private Image m_Image;
+    public AudioSource m_AudioSource;
 
-    public float moveSpeed = 5f;
-    public float fadeDuration = 1;
-    public float fadeScale = 2;
-    public float opacityFadespeed = .1f;
+    public float moveSpeed = 5f;            //Vitesse de la note quand elle se deplace 
+    public float fadeScale = 2;             //A quelle vitesse la note scale up quand elle doit fade
+    public float opacityFadespeed = .1f;    //A quelle vitesse la note disparait
+    public float durability = 0;            //Combien de temps la note doit etre joue
+    private float durabiltyTimer = 0;
+
+    public float canvaScale = 1;
     public E_NOTE note;
-    public Canvas canvas;
 
     private bool m_fadeAway = false;
-    private float fadeTimer = 0;
+    private bool m_isWaiting = true;
 
     private void Awake()
     {
         m_RectTransform = GetComponent<RectTransform>();
         m_Image = GetComponent<Image>();
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     public void Update()
     {
+        if(m_isWaiting)
+            durability += Time.deltaTime;
+
         if (m_fadeAway)
         {
-            fadeTimer += Time.deltaTime;
+            durabiltyTimer += Time.deltaTime;
+            if (durabiltyTimer > durability)
+                StartCoroutine(FadeOutAndDestroy());
+
             float speed = Time.deltaTime * fadeScale;
             m_RectTransform.localScale = new Vector3(m_RectTransform.localScale.x + speed, m_RectTransform.localScale.y + speed, m_RectTransform.localScale.z + speed);
             Color col = m_Image.color;
             col.a -= opacityFadespeed * Time.deltaTime;
             m_Image.color = col;
-
-            if (fadeTimer > fadeDuration)
-                Destroy(gameObject);
         }
         else
         {
-            float speed = Time.deltaTime * moveSpeed * canvas.scaleFactor;
+            float speed = Time.deltaTime * moveSpeed * canvaScale;
             m_RectTransform.position = new Vector3(m_RectTransform.position.x - speed, m_RectTransform.position.y, m_RectTransform.position.z);
         }
     }
@@ -51,7 +61,27 @@ public class MusicNoteScript : MonoBehaviour
         if (collision.gameObject.CompareTag("NotePlayer"))
         {
             m_fadeAway = true;
-            MidiManager.Instance.PlayPianoNote((int)note);
+            m_AudioSource.Play();
         }
+    }
+
+    public System.Collections.IEnumerator FadeOutAndDestroy()
+    {
+        float vol = m_AudioSource.volume;
+        float fadeTime = 0.07f;
+        float t = 0f;
+        while (t < fadeTime)
+        {
+            m_AudioSource.volume = Mathf.Lerp(vol, 0f, t / fadeTime);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        m_AudioSource.Stop();
+        Destroy(gameObject);
+    }
+
+    public void stopDurability()
+    {
+        m_isWaiting = false;
     }
 }

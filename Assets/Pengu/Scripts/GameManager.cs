@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    private int m_level;
+    private int m_level = 1;
 
     private Level1 m_level1;
 
@@ -27,8 +27,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Start()
+    {
+        createLevel1();  
+    }
+
     public void createLevel1() 
     {
+        m_level1 = new Level1();
+
         m_level1.m_clearNotes = new bool[7];
         for(int i = 0; i < 7; i++)
             m_level1.m_clearNotes[i] = false;
@@ -42,11 +49,14 @@ public class GameManager : MonoBehaviour
                 m_level1.m_clearNotes[(int)note] = true;
 
                 for (int i = 0; i < 7; i++)
+                {
                     if(!m_level1.m_clearNotes[i])
-                        break;
+                        return;
+
+                }
 
                 Debug.Log("LEVEL CLEARED");
-                //LevelCleared !!!
+                MidHandler.Instance.StartPlayback();
                 break;
         }
     }

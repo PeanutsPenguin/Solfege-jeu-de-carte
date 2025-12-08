@@ -36,7 +36,8 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 				data.resetvalues();
 				data.draggable = false;
 				pfxMain.startColor = Color.green;
-				MidiManager.Instance.launchNote(note);
+				MidHandler.Instance.launchCustomNote(note);
+				GameManager.Instance.setValidedNote(note);
 			}
 			else
 				pfxMain.startColor = Color.red;

@@ -18,10 +18,17 @@ public class DemoScript : MonoBehaviour
 
     private void Start()
     {
+        foreach (var outputDevice in OutputDevice.GetAll())
+        {
+            Debug.Log(outputDevice.Name);
+        }
+
         InitializeOutputDevice();
         var midiFile = CreateTestFile();
         InitializeFilePlayback(midiFile);
         StartPlayback();
+
+
     }
 
     private void OnApplicationQuit()

@@ -881,8 +881,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ef695c5ea0f734aad44997107962d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MidHandler
-  mainCanva: {fileID: 388781060}
-  midiFileName: Assets/Pengu/Assets/Victory.mid
+  midiFileName: Assets/Pengu/Assets/solKey.mid
+  audioSource: {fileID: 0}
   pianoNotes:
   - {fileID: 8300000, guid: 1d13b51f21949654c870141c4a906f19, type: 3}
   - {fileID: 8300000, guid: c51ef42db1d389144b0f93b0c9ddb314, type: 3}
@@ -891,9 +891,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4a80397d2f94c3a46a16d77a04677938, type: 3}
   - {fileID: 8300000, guid: 0564940ab91c30048a5b7623bf21cca4, type: 3}
   - {fileID: 8300000, guid: 2239761e993106b4ebe5e1bfdd8d331a, type: 3}
-  MusicNotePrefab: {fileID: 5672463028585468893, guid: 002c25613eed8c64bae133b98696c837, type: 3}
-  YDoNotePosition: -185
-  spaceBetweenNotePlayer: 32.5
 --- !u!224 &913290465 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8161286721286682535, guid: e27eed9fca9381b4287db4f12d6fe90e, type: 3}
@@ -6358,50 +6355,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1178939375
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1178939377}
-  - component: {fileID: 1178939376}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1178939376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1178939375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 417049345dd981647bfc7be0a79ad2cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
---- !u!4 &1178939377
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1178939375}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1254413458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8231,4 +8184,3 @@ SceneRoots:
   - {fileID: 544477565}
   - {fileID: 1146622540}
   - {fileID: 878088494}
-  - {fileID: 1178939377}
