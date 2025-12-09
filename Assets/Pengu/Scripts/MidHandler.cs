@@ -3,6 +3,7 @@ using Melanchall.DryWetMidi.Interaction;
 using Melanchall.DryWetMidi.Multimedia;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class MidHandler : MonoBehaviour
@@ -28,6 +29,8 @@ public class MidHandler : MonoBehaviour
     private Queue<NoteEvent> noteEventQueue = new Queue<NoteEvent>();
     private readonly object queueLock = new object();
 
+    private int m_noteOnScreen = 0;
+    public bool m_isPlaying = false;
 
     #region Apparition de note
     public GameObject MusicNotePrefab;                  //Prefab de la note
@@ -101,6 +104,7 @@ public class MidHandler : MonoBehaviour
     {
         playback = midiFile.GetPlayback();
         playback.EventPlayed += OnMidiEvent;
+        m_isPlaying = true;
         playback.Start();
     }
     void OnMidiEvent(object sender, MidiEventPlayedEventArgs e)
@@ -192,6 +196,7 @@ public class MidHandler : MonoBehaviour
         newNoteScript.m_AudioSource.clip = pianoNotes[(int)note];
         newNoteScript.m_AudioSource.volume = vel / 127f;
         activeNotes[(int)note] = newNoteScript;
+        AddNoteOnScreenCounter();
     }
     public void launchCustomNote(E_NOTE note)
     {
@@ -208,7 +213,26 @@ public class MidHandler : MonoBehaviour
         MusicNoteScript newNoteScript = newNote.GetComponent<MusicNoteScript>();
         newNoteScript.canvaScale = mainCanva.scaleFactor;
         newNoteScript.m_AudioSource.clip = pianoNotes[(int)note];
-        newNoteScript.durability = .5f;
+        newNoteScript.durability = 1f;
         newNoteScript.stopDurability();
+        AddNoteOnScreenCounter();
+    }
+
+    public void AddNoteOnScreenCounter()
+    {
+        m_noteOnScreen++;
+    }
+
+    public void removeNoteOnScreenCounter()
+    {
+        m_noteOnScreen--;
+        Debug.Log(m_noteOnScreen);
+        if(m_noteOnScreen == 0)
+            m_isPlaying = false;
+    }
+
+    public int getNoteOnScreencounter()
+    { 
+        return m_noteOnScreen; 
     }
 }

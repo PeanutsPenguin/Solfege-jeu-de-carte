@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3876714509986183216}
   m_Layer: 5
   m_Name: Musicnote
-  m_TagString: Untagged
+  m_TagString: Note
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -95,6 +95,7 @@ MonoBehaviour:
   moveSpeed: 150
   fadeScale: 2
   opacityFadespeed: 2.53
+  durability: 0
   canvaScale: 1
   note: 0
 --- !u!61 &3095194683375943683

@@ -38,6 +38,7 @@ public class MusicNoteScript : MonoBehaviour
         if (m_fadeAway)
         {
             durabiltyTimer += Time.deltaTime;
+
             if (durabiltyTimer > durability)
                 StartCoroutine(FadeOutAndDestroy());
 
@@ -60,8 +61,10 @@ public class MusicNoteScript : MonoBehaviour
 
         if (collision.gameObject.CompareTag("NotePlayer"))
         {
-            m_fadeAway = true;
             m_AudioSource.Play();
+            collision.gameObject.GetComponent<NotePlayerScript>().Startanimation(note);
+            MidHandler.Instance.removeNoteOnScreenCounter();
+            m_fadeAway = true;
         }
     }
 
@@ -83,5 +86,10 @@ public class MusicNoteScript : MonoBehaviour
     public void stopDurability()
     {
         m_isWaiting = false;
+    }
+
+    public bool getFadeAway()
+    {
+        return m_fadeAway;
     }
 }

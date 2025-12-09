@@ -10,6 +10,9 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 	[SerializeField] Text m_name;
 	[SerializeField] private E_NOTE note;
 
+	public AudioClip goodsoundEffect;
+	public AudioClip badsoundEffect;
+
 	private void Awake()
 	{
 		m_RectTransform = GetComponent<RectTransform>();
@@ -38,9 +41,13 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 				pfxMain.startColor = Color.green;
 				MidHandler.Instance.launchCustomNote(note);
 				GameManager.Instance.setValidedNote(note);
+				GetComponent<AudioSource>().PlayOneShot(goodsoundEffect);
 			}
 			else
+			{
 				pfxMain.startColor = Color.red;
+                GetComponent<AudioSource>().PlayOneShot(badsoundEffect);
+            }
 
 			//Lance l'animation du systeme de particule en fonction du resultat
 			particle.Play();
