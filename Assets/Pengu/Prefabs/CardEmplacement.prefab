@@ -138,6 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   particle: {fileID: 0}
   m_name: {fileID: 5792593492257042196}
+  m_colorImage: {fileID: 7603184407330322703}
   m_backGround: {fileID: 7603184407330322703}
   note: 0
   goodsoundEffect: {fileID: 8300000, guid: e768c7202ebe1e748b591789e65d70bb, type: 3}

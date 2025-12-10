@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Struct qui definie la condition pour la fin d'un niveau 
+/// </summary>
 struct ClearNotes
 {
     public bool[] m_clearNotes;
@@ -8,28 +11,40 @@ struct ClearNotes
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; }    //Instance du GameManager
 
-    private int m_level = 1;
-    private ClearNotes m_levelValues;
-    private bool levelCleared = false;
+    //Level
+    private int m_level = 1;                                    //Niveau actuel
+    private ClearNotes m_levelValues;                           //Conditions de victoire du niveau
+    private bool levelCleared = false;                          //Est ce que le niveau a etait complete ?
+    private bool playingEndMusic = false;                       //Est ce que la musique de fin de niveau est en train d'etre jouee ?
 
-    public Text textLevel;
-    public Text textLevelDescription;
+    //Text
+    public Text textLevel;                                      //Texte du titre du niveau
+    public Text textLevelDescription;                           //Texte de la description du niveau
 
-    private Canvas mainCanva;
+    //GameObjects
+    public GameObject noteCardStocker;                          //Reference a l'objet contenant toutes les noteCard
+    public GameObject cardEmplacementStocker;                   //Reference a l'objet contenant tout les emplacement de carte
 
-    public GameObject noteCardStocker;
-    public GameObject cardEmplacementStocker;
+    //Curtain
+    public GameObject curtain;                                  //Reference au rideau
+    private bool curtainRaised = false;                         //Est ce que le rideau est leve ?
+    private bool moveCurtain = false;                           //Est ce que le rideau doit bouger ?
+    public float curtainspeed = 100;                            //Vitesse de mouvement du rideau
+    public float beginTimer = 0.5f;                             //Lorce que le rideau se leve, temps qu'il met a descendre puis se leve (effet plus realiste)
+    private float beginCounter = 0;                             //Depuis quand le rideau se baisse
 
-    public GameObject curtain;
-    private bool curtainRaised = false;
-    private bool moveCurtain = false;
-    public float curtainspeed = 100;
-    public float beginTimer = 0.5f;
-    private float beginCounter = 0;
-    //public AudioClip curtainSound;
+    //Audio
+    public string level1MsuciWin = "Assets/Pengu/Assets/Midi/BasicTetrisTheme.mid"; //Musique de fin de niveau 1
+    public string level2MsuciWin = "Assets/Pengu/Assets/Midi/lvl2Music.mid"; //Musique de fin de niveau 1
+    public string level3MsuciWin = "Assets/Pengu/Assets/Midi/lvl3Music.mid"; //Musique de fin de niveau 1
 
+    private Canvas mainCanva;                                   //Reference au canva 
+
+
+    #region UNITY METHODS
+    //Creation de l'instance
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -44,71 +59,164 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        createLevel1();
-        mainCanva = GameObject.FindGameObjectWithTag("MainCanva").GetComponent<Canvas>();
+        createLevel1();                                                                     //Creation du niveau 1
+        mainCanva = GameObject.FindGameObjectWithTag("MainCanva").GetComponent<Canvas>();   //Obtention du Canva grace a un tag
     }
+    public void Update()
+    {
+        //Si le rideau doit bouger
+        if (moveCurtain)
+        {
+            if (!curtainRaised)
+                raiseCurtain();     //Leve le rideau
+            else
+                downCurtain();      //Baisse le rideau
+        }
+
+        //Si le niveau est clear, qu'qucun fichier est entrain d'etre joue et qu'il n'y a plus de note a l'ecran, faire bouger le rideau
+        if (levelCleared && MidiHandler.Instance.getNoteOnScreencounter() == 0 && !MidiHandler.Instance.m_isPlaying)
+        {
+            if (!playingEndMusic)
+            {
+                MidiHandler.Instance.StartPlayback();       //Joue la musique de fin de niveau
+                playingEndMusic = true;
+            }
+            else
+            {
+                moveCurtain = true;
+            }
+
+        }
+    }
+
+    #endregion
 
     public void createLevel1() 
     {
-        m_levelValues = new ClearNotes();
+        m_levelValues = new ClearNotes();           //Nouvel insntace des consitions de victoires
 
-        m_levelValues.m_clearNotes = new bool[7];
-        for(int i = 0; i < 7; i++)
-            m_levelValues.m_clearNotes[i] = false;
+        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
+        for(int i = 0; i < 7; i++)                  //(TODO: !nombre hardcode) 
+            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
 
+        //Mise en place du texte
         textLevel.text = "Level 1 :";
         textLevelDescription.text = "Relis chaque note a son bon emplacement sur la portée !";
-        moveCurtain = true;
-        //GetComponent<AudioSource>().clip = curtainSound;
-        //GetComponent<AudioSource>().Play();
+
+        moveCurtain = true;                         //Leve le rideau
+        levelCleared = false;                       //Niveau fini = faux
+
+        //Melange les notes Cards
+        shuffleNoteCards();
+
+        MidiHandler.Instance.LoadMidi(level1MsuciWin);  //Charge la musique de fin de niveau
+        playingEndMusic = false;
     }
 
     private void createLevel2()
     {
-        m_levelValues = new ClearNotes();
+        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
 
-        m_levelValues.m_clearNotes = new bool[7];
-        for (int i = 0; i < 7; i++)
-            m_levelValues.m_clearNotes[i] = false;
+        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
+        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
+            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
 
+        //Mise en place du texte
         textLevel.text = "Level 2 :";
         textLevelDescription.text = "Te souviens-tu de ou etait place les notes ?";
-        moveCurtain = true;
-        levelCleared = false;
 
+        moveCurtain = true;                         //Leve le rideau
+        levelCleared = false;                       //Niveau fini = faux
+
+        //Reecupere tout les script d'emplacements de carte depuis le stocker
         CareEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CareEmplacementScript>();
 
+        //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
+        foreach (CareEmplacementScript sc in arr)
+        {
+            Color transparent = new Color();        
+            transparent.a = 0;
+            sc.m_name.color = transparent;
+        }
+
+        //Melange les notes Cards
+        shuffleNoteCards();
+
+        MidiHandler.Instance.LoadMidi(level2MsuciWin);  //Charge la musique de fin de niveau
+        playingEndMusic = false;
+    }
+
+    private void createLevel3()
+    {
+        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
+
+        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
+        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
+            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+
+        //Mise en place du texte
+        textLevel.text = "Level 3 :";
+        textLevelDescription.text = "Plus difficile encore ! As-tu bien appris ?";
+
+        moveCurtain = true;                         //Leve le rideau
+        levelCleared = false;                       //Niveau fini = faux
+
+        //Reecupere tout les script d'emplacements de carte depuis le stocker
+        CareEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CareEmplacementScript>();
+
+        //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
         foreach (CareEmplacementScript sc in arr)
         {
             Color transparent = new Color();
             transparent.a = 0;
-           sc.m_name.color = transparent;
+            sc.m_name.color = transparent;
+            sc.m_colorImage.color = transparent;
         }
 
+        //Melange les notes Cards
+        shuffleNoteCards();
+
+        MidiHandler.Instance.LoadMidi(level3MsuciWin);  //Charge la musique de fin de niveau
+        playingEndMusic = false;
+    }
+
+    private void createLevel4()
+    {
+        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
+
+        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
+        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
+            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+
+        //Mise en place du texte
+        textLevel.text = "Level 4 :";
+        textLevelDescription.text = "BRAVO ! Maintenant libre a toi de jouer ce que tu veux, appuie sur les notes afin de les jouer !";
+
+        moveCurtain = true;                         //Leve le rideau
+        levelCleared = false;                       //Niveau fini = faux
+
+        //Reecupere tout les script de noteCard depuis le stocker
         NoteCardScript[] arr2 = noteCardStocker.GetComponentsInChildren<NoteCardScript>();
 
         foreach (NoteCardScript sc in arr2)
+            sc.playable = true;
+        playingEndMusic = false;
+    }
+
+    public void shuffleNoteCards()
+    {
+        //Reecupere tout les script de noteCard depuis le stocker
+        NoteCardScript[] arr2 = noteCardStocker.GetComponentsInChildren<NoteCardScript>();
+
+        //Prends une position semi-aleatoire et place les noteCard
+        foreach (NoteCardScript sc in arr2)
         {
-            int posX = Random.Range(-350, 350);
-            int posY = Random.Range(-100, 100);
+            int posX = Random.Range(-350, 350);//(TODO: !nombre hardcode) 
+            int posY = Random.Range(-100, 100);//(TODO: !nombre hardcode) 
 
             sc.gameObject.GetComponent<RectTransform>().localPosition = new Vector3(posX, posY, 0);
             sc.draggable = true;
         }
-    }
-
-    public void Update()
-    {
-        if (moveCurtain)
-        {
-            if (!curtainRaised)
-                raiseCurtain();
-            else 
-                downCurtain();
-        }
-
-        if(levelCleared && MidHandler.Instance.getNoteOnScreencounter() == 0 && !MidHandler.Instance.m_isPlaying)
-            moveCurtain = true;
     }
 
     public void setValidedNote(E_NOTE note)
@@ -116,61 +224,70 @@ public class GameManager : MonoBehaviour
         switch (m_level)
         {
             case 1:
-                m_levelValues.m_clearNotes[(int)note] = true;
+            case 2:
+            case 3:
+                m_levelValues.m_clearNotes[(int)note] = true;   //Valide la note
 
+                //Verifie que toues les notes sont valides
                 for (int i = 0; i < 7; i++)
                 {
                     if(!m_levelValues.m_clearNotes[i])
                         return;
-
                 }
 
                 Debug.Log("LEVEL CLEARED");
-                levelCleared = true;
-                m_level++;
-                MidHandler.Instance.StartPlayback();
-                break;
+                levelCleared = true;                        //Niveau fini
+                m_level++;                                  //Niveau suivamt
+            break;
         }
     }
 
     private void raiseCurtain()
     {
+        //Si le mainCanva n'est pas associe, le retrouver
         if(mainCanva == null)
             mainCanva = GameObject.FindGameObjectWithTag("MainCanva").GetComponent<Canvas>();
 
-        beginCounter += Time.deltaTime;
-        float speed = Time.deltaTime * curtainspeed * mainCanva.scaleFactor;
+        beginCounter += Time.deltaTime;                                         //Incremente le temps passe a baisser le rideau
 
+        float speed = Time.deltaTime * curtainspeed * mainCanva.scaleFactor;    //Calcule de la vitesse de deplacement du rideau
+
+        //Monte ou descend le rideau en fonction du timer
         if (beginCounter < beginTimer) 
             curtain.transform.position = new Vector3(curtain.transform.position.x, curtain.transform.position.y - speed * 2, curtain.transform.position.z);
         else
             curtain.transform.position = new Vector3(curtain.transform.position.x, curtain.transform.position.y + speed, curtain.transform.position.z);
 
-        if (curtain.transform.position.y > 2030)
+        //Si le rideau est entierement remonte arrete le deplacement 
+        if (curtain.transform.position.y > 2030 * mainCanva.scaleFactor)//(TODO: !nombre hardcode) 
         {
             curtainRaised = true;
             moveCurtain = false;
         }
-
-        Debug.Log(curtain.transform.position.y);
     }
 
     private void downCurtain()
     {
-        Debug.Log(curtain.transform.position.y);
-        float speed = Time.deltaTime * curtainspeed * mainCanva.scaleFactor;
+        float speed = Time.deltaTime * curtainspeed * mainCanva.scaleFactor;        //Calcule de la vitesse de deplacement du rideau
 
+        //Descend le rideau
         curtain.transform.position = new Vector3(curtain.transform.position.x, curtain.transform.position.y - speed, curtain.transform.position.z);
 
-        if (curtain.transform.position.y < 413)
+        //Si le rideau est entierement descendu arrete le deplacement 
+        if (curtain.transform.position.y < 413 * mainCanva.scaleFactor)//(TODO: !nombre hardcode) 
         {
             curtainRaised = false;
             moveCurtain = false;
 
+            //Si le niveau est clear, creer le niveau suivant
             if (levelCleared) 
             {
                 if (m_level == 2)
                     createLevel2();
+                if(m_level == 3)
+                    createLevel3();
+                if (m_level == 4)
+                    createLevel4();
             }
         }
     }

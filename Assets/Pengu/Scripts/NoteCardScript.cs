@@ -13,8 +13,9 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	[SerializeField] private E_NOTE note;
 
 	public bool draggable = true;
+	public bool playable = false;
 
-	private void Awake()
+    private void Awake()
 	{
 		m_RectTransform = GetComponent<RectTransform>();
 		m_CanvasGroup = GetComponent<CanvasGroup>();
@@ -25,7 +26,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	//Au commencement du drag
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		if(!draggable)
+        if (!draggable)
 			return;
 
 		//Desactive les evenement sur l'objets et le rend plus opaque 
@@ -56,8 +57,9 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	//Au moment du clic sur l'objet 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		
-	}
+        if (playable)
+			MidiHandler.Instance.launchCustomNote(note);
+    }
 
 	public E_NOTE getNote()
 	{

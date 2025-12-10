@@ -15,7 +15,7 @@ public class MusicNoteScript : MonoBehaviour
     public float fadeScale = 2;             //A quelle vitesse la note scale up quand elle doit fade
     public float opacityFadespeed = .1f;    //A quelle vitesse la note disparait
     public float durability = 0;            //Combien de temps la note doit etre joue
-    private float durabiltyTimer = 0;
+    public float durabiltyTimer = 0;
 
     public float canvaScale = 1;
     public E_NOTE note;
@@ -32,7 +32,7 @@ public class MusicNoteScript : MonoBehaviour
 
     public void Update()
     {
-        if(m_isWaiting)
+        if (m_isWaiting)
             durability += Time.deltaTime;
 
         if (m_fadeAway)
@@ -51,7 +51,7 @@ public class MusicNoteScript : MonoBehaviour
         else
         {
             float speed = Time.deltaTime * moveSpeed * canvaScale;
-            m_RectTransform.position = new Vector3(m_RectTransform.position.x - speed, m_RectTransform.position.y, m_RectTransform.position.z);
+            m_RectTransform.localPosition = new Vector3(m_RectTransform.localPosition.x - speed, m_RectTransform.localPosition.y, 0);
         }
     }
     public void OnTriggerEnter2D(Collider2D collision)
@@ -63,7 +63,7 @@ public class MusicNoteScript : MonoBehaviour
         {
             m_AudioSource.Play();
             collision.gameObject.GetComponent<NotePlayerScript>().Startanimation(note);
-            MidHandler.Instance.removeNoteOnScreenCounter();
+            MidiHandler.Instance.removeNoteOnScreenCounter();
             m_fadeAway = true;
         }
     }
