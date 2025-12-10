@@ -1,3 +1,4 @@
+using NoteValues;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 {
 	private RectTransform m_RectTransform;
 	private CanvasGroup m_CanvasGroup;
-    [SerializeField] Text m_name;
+    public Text m_name;
     [SerializeField] private Canvas m_Canvas;
 	[SerializeField] private E_NOTE note;
 
@@ -17,7 +18,8 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	{
 		m_RectTransform = GetComponent<RectTransform>();
 		m_CanvasGroup = GetComponent<CanvasGroup>();
-        setText();
+		m_name.text = NoteValuesHandler.SetNoteText(note);
+		GetComponent<Image>().color = NoteValuesHandler.setNoteColor(note);
 	}
 
 	//Au commencement du drag
@@ -67,33 +69,5 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
         //Remet l'image a la normal
         m_CanvasGroup.alpha = 1;
         m_CanvasGroup.blocksRaycasts = true;
-    }
-
-    void setText()
-    {
-        switch (note)
-        {
-            case E_NOTE.E_DO:
-                m_name.text = "DO";
-                break;
-            case E_NOTE.E_RE:
-                m_name.text = "RE";
-                break;
-            case E_NOTE.E_MI:
-                m_name.text = "MI";
-                break;
-            case E_NOTE.E_FA:
-                m_name.text = "FA";
-                break;
-            case E_NOTE.E_SOL:
-                m_name.text = "SOL";
-                break;
-            case E_NOTE.E_LA:
-                m_name.text = "LA";
-                break;
-            case E_NOTE.E_SI:
-                m_name.text = "SI";
-                break;
-        }
     }
 }

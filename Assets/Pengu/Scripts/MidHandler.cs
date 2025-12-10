@@ -187,7 +187,7 @@ public class MidHandler : MonoBehaviour
 
         //Place la note au bon endroit
         float Ypos = YDoNotePosition + (spaceBetweenNotePlayer * (int)note);
-        newNote.GetComponent<RectTransform>().anchoredPosition = new Vector3(500, Ypos, 0);
+        newNote.GetComponent<RectTransform>().anchoredPosition = new Vector3(1000, Ypos, 0);
 
         //Met les bonnes valeurs
         newNote.GetComponent<MusicNoteScript>().note = note;
@@ -206,7 +206,7 @@ public class MidHandler : MonoBehaviour
 
         //Place la note au bon endroit
         float Ypos = YDoNotePosition + (spaceBetweenNotePlayer * (int)note);
-        newNote.GetComponent<RectTransform>().anchoredPosition = new Vector3(500, Ypos, 0);
+        newNote.GetComponent<RectTransform>().anchoredPosition = new Vector3(1000, Ypos, 0);
 
         //Met les bonnes valeurs
         newNote.GetComponent<MusicNoteScript>().note = note;

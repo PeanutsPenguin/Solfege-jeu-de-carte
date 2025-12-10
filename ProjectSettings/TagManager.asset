@@ -6,6 +6,7 @@ TagManager:
   tags:
   - NotePlayer
   - Note
+  - MainCanva
   layers:
   - Default
   - TransparentFX
