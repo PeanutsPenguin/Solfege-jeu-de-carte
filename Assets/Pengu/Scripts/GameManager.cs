@@ -11,36 +11,36 @@ struct ClearNotes
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }    //Instance du GameManager
+    public static GameManager Instance { get; private set; }                                            //Instance du GameManager
 
     //Level
-    private int m_level = 1;                                    //Niveau actuel
-    private ClearNotes m_levelValues;                           //Conditions de victoire du niveau
-    private bool levelCleared = false;                          //Est ce que le niveau a etait complete ?
-    private bool playingEndMusic = false;                       //Est ce que la musique de fin de niveau est en train d'etre jouee ?
+    private int         m_level                 = 1;                                                    //Niveau actuel
+    private ClearNotes  m_levelValues           = new ClearNotes();                                     //Conditions de victoire du niveau
+    private bool        levelCleared            = false;                                                //Est ce que le niveau a etait complete ?
+    private bool        playingEndMusic         = false;                                                //Est ce que la musique de fin de niveau est en train d'etre jouee ?
 
     //Text
-    public Text textLevel;                                      //Texte du titre du niveau
-    public Text textLevelDescription;                           //Texte de la description du niveau
+    public Text         textLevel;                                                                      //Texte du titre du niveau
+    public Text         textLevelDescription;                                                           //Texte de la description du niveau
 
     //GameObjects
-    public GameObject noteCardStocker;                          //Reference a l'objet contenant toutes les noteCard
-    public GameObject cardEmplacementStocker;                   //Reference a l'objet contenant tout les emplacement de carte
+    public GameObject   noteCardStocker;                                                                //Reference a l'objet contenant toutes les noteCard
+    public GameObject   cardEmplacementStocker;                                                         //Reference a l'objet contenant tout les emplacement de carte
 
     //Curtain
-    public GameObject curtain;                                  //Reference au rideau
-    private bool curtainRaised = false;                         //Est ce que le rideau est leve ?
-    private bool moveCurtain = false;                           //Est ce que le rideau doit bouger ?
-    public float curtainspeed = 100;                            //Vitesse de mouvement du rideau
-    public float beginTimer = 0.5f;                             //Lorce que le rideau se leve, temps qu'il met a descendre puis se leve (effet plus realiste)
-    private float beginCounter = 0;                             //Depuis quand le rideau se baisse
+    public GameObject   curtain;                                                                        //Reference au rideau
+    private bool        curtainRaised           = false;                                                //Est ce que le rideau est leve ?
+    private bool        moveCurtain             = false;                                                //Est ce que le rideau doit bouger ?
+    public float        curtainspeed            = 100;                                                  //Vitesse de mouvement du rideau
+    public float        beginTimer              = 0.5f;                                                 //Lorce que le rideau se leve, temps qu'il met a descendre puis se leve (effet plus realiste)
+    private float       beginCounter            = 0;                                                    //Depuis quand le rideau se baisse
 
     //Audio
-    public string level1MsuciWin = "Assets/Pengu/Assets/Midi/BasicTetrisTheme.mid"; //Musique de fin de niveau 1
-    public string level2MsuciWin = "Assets/Pengu/Assets/Midi/lvl2Music.mid"; //Musique de fin de niveau 1
-    public string level3MsuciWin = "Assets/Pengu/Assets/Midi/lvl3Music.mid"; //Musique de fin de niveau 1
+    public string       level1MsuciWin          = "Assets/Pengu/Assets/Midi/BasicTetrisTheme.mid";      //Musique de fin de niveau 1
+    public string       level2MsuciWin          = "Assets/Pengu/Assets/Midi/lvl2Music.mid";             //Musique de fin de niveau 1
+    public string       level3MsuciWin          = "Assets/Pengu/Assets/Midi/lvl3Music.mid";             //Musique de fin de niveau 1
 
-    private Canvas mainCanva;                                   //Reference au canva 
+    private Canvas mainCanva;                                                                           //Reference au canva 
 
 
     #region UNITY METHODS
@@ -88,16 +88,19 @@ public class GameManager : MonoBehaviour
 
         }
     }
-
     #endregion
+
+    #region Levels
+    void resetLevelValues() 
+    {
+        for (int i = 0; i < m_levelValues.m_clearNotes.Length; i++)                  //(TODO: !nombre hardcode) 
+            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+    }
 
     public void createLevel1() 
     {
-        m_levelValues = new ClearNotes();           //Nouvel insntace des consitions de victoires
-
         m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
-        for(int i = 0; i < 7; i++)                  //(TODO: !nombre hardcode) 
-            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+        resetLevelValues();
 
         //Mise en place du texte
         textLevel.text = "Level 1 :";
@@ -115,11 +118,7 @@ public class GameManager : MonoBehaviour
 
     private void createLevel2()
     {
-        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
-
-        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
-        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
-            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+        resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
         textLevel.text = "Level 2 :";
@@ -148,11 +147,7 @@ public class GameManager : MonoBehaviour
 
     private void createLevel3()
     {
-        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
-
-        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
-        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
-            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+        resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
         textLevel.text = "Level 3 :";
@@ -182,11 +177,7 @@ public class GameManager : MonoBehaviour
 
     private void createLevel4()
     {
-        m_levelValues = new ClearNotes();               //Nouvel insntace des consitions de victoires
-
-        m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
-        for (int i = 0; i < 7; i++)                 //(TODO: !nombre hardcode) 
-            m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
+        resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
         textLevel.text = "Level 4 :";
@@ -203,6 +194,31 @@ public class GameManager : MonoBehaviour
         playingEndMusic = false;
     }
 
+    public void setValidedNote(E_NOTE note)
+    {
+        switch (m_level)
+        {
+            case 1:
+            case 2:
+            case 3:
+                m_levelValues.m_clearNotes[(int)note] = true;   //Valide la note
+
+                //Verifie que toues les notes sont valides
+                for (int i = 0; i < 7; i++)
+                {
+                    if (!m_levelValues.m_clearNotes[i])
+                        return;
+                }
+
+                Debug.Log("LEVEL CLEARED");
+                levelCleared = true;                        //Niveau fini
+                m_level++;                                  //Niveau suivamt
+                break;
+        }
+    }
+    #endregion
+
+    #region NoteCards
     public void shuffleNoteCards()
     {
         //Reecupere tout les script de noteCard depuis le stocker
@@ -218,30 +234,9 @@ public class GameManager : MonoBehaviour
             sc.draggable = true;
         }
     }
+    #endregion
 
-    public void setValidedNote(E_NOTE note)
-    {
-        switch (m_level)
-        {
-            case 1:
-            case 2:
-            case 3:
-                m_levelValues.m_clearNotes[(int)note] = true;   //Valide la note
-
-                //Verifie que toues les notes sont valides
-                for (int i = 0; i < 7; i++)
-                {
-                    if(!m_levelValues.m_clearNotes[i])
-                        return;
-                }
-
-                Debug.Log("LEVEL CLEARED");
-                levelCleared = true;                        //Niveau fini
-                m_level++;                                  //Niveau suivamt
-            break;
-        }
-    }
-
+    #region Curtain
     private void raiseCurtain()
     {
         //Si le mainCanva n'est pas associe, le retrouver
@@ -291,4 +286,5 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    #endregion
 }

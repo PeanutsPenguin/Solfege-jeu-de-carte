@@ -1,27 +1,25 @@
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class MusicNoteScript : MonoBehaviour
 {
-    private RectTransform m_RectTransform;
-    private Image m_Image;
-    public AudioSource m_AudioSource;
+    #region Champs publique
+    [Tooltip("Vitesse de la note quand elle se deplace")]                   public float moveSpeed = 5f;            
+    [Tooltip("A quelle vitesse la note scale up quand elle doit fade")]     public float fadeScale = 2;             
+    [Tooltip("A quelle vitesse la note disparait")]                         public float opacityFadespeed = .1f;    
+    [Tooltip("Combien de temps la note doit etre joue")]                    public float durability = 0;
+    [Tooltip("Valeur du CanvaScaleFactor")]                                 public float canvaScale = 1;
+    [Tooltip("Note")]                                                       public E_NOTE note;
+    #endregion
 
-    public float moveSpeed = 5f;            //Vitesse de la note quand elle se deplace 
-    public float fadeScale = 2;             //A quelle vitesse la note scale up quand elle doit fade
-    public float opacityFadespeed = .1f;    //A quelle vitesse la note disparait
-    public float durability = 0;            //Combien de temps la note doit etre joue
-    public float durabiltyTimer = 0;
-
-    public float canvaScale = 1;
-    public E_NOTE note;
-
+    #region Champs prives
+    private float durabiltyTimer = 0;
     private bool m_fadeAway = false;
     private bool m_isWaiting = true;
+    private RectTransform m_RectTransform;
+    private Image m_Image;
+    private AudioSource m_AudioSource;
+    #endregion
 
     private void Awake()
     {
@@ -91,5 +89,15 @@ public class MusicNoteScript : MonoBehaviour
     public bool getFadeAway()
     {
         return m_fadeAway;
+    }
+
+    public void setAudioClip(AudioClip clip)
+    {
+        m_AudioSource.clip = clip;
+    }
+
+    public void setVolume(float vol)
+    {
+        m_AudioSource.volume = vol;
     }
 }

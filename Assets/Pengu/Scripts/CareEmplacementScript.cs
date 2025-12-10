@@ -5,27 +5,35 @@ using UnityEngine.UI;
 
 public class CareEmplacementScript : MonoBehaviour, IDropHandler
 {
+    #region Champs publique
+    [Tooltip("Texte ecrit dans l'emplacement de carte")]					public Text m_name;
+	[Tooltip("Image de couleur de l'emplacement de carte")]					public Image m_colorImage;
+	[Tooltip("Particle system joue lors d'une bonne/mauvaise reponse")]		public ParticleSystem particle;                     
+	[Tooltip("Audio joue lors d'une bonne reponse")]						public AudioClip goodsoundEffect;                   
+	[Tooltip("Audio joue lors d'une mauvaise reponse")]						public AudioClip badsoundEffect;
+    #endregion
 
-	public ParticleSystem particle;						//Particle system joue lors d'une bonne/mauvaise reponse
-	private RectTransform m_RectTransform;				//Transform component de l'image
-	public Text m_name;									//Texte ecrit dans l'emplacement de carte
-	public Image m_colorImage;							//Image de couleur de l'emplacement de carte
-    [SerializeField] private Image m_backGround;		//Image de fond de l'emplacement de carte
-    [SerializeField] private E_NOTE note;				//Note de l'emplacemetn de carte
+    #region Champs serialize
+    [Tooltip("Image de fond de l'emplacement de carte")][SerializeField]	private Image m_backGround;
+    [Tooltip("Note de l'emplacemetn de carte")][SerializeField]				private E_NOTE note;               
+    #endregion
 
-	public AudioClip goodsoundEffect;					//Audio joue lors d'une bonne reponse
-	public AudioClip badsoundEffect;					//Audio joue lors d'une mauvaise reponse
+    #region Champ prive
+    private RectTransform m_RectTransform;              //Transform component de l'image
+    #endregion
 
-
-	void Awake()
+    #region UNITY Methods
+    void Awake()
 	{
 		//Mise en place des valeurs
 		m_RectTransform = GetComponent<RectTransform>();
 		m_name.text = NoteValuesHandler.SetNoteText(note);
-        m_backGround.color = NoteValuesHandler.setNoteColor(note);
-    }
+		m_backGround.color = NoteValuesHandler.setNoteColor(note);
+	}
+    #endregion
 
-	public void OnDrop(PointerEventData eventData)
+    #region OnDrop
+    public void OnDrop(PointerEventData eventData)
 	{
 		//Verifie que l'objet depose n'est pas nul
 	   if(eventData.pointerDrag != null)
@@ -36,8 +44,8 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 			//Recupere le script de la noteCard
 			NoteCardScript data = eventData.pointerDrag.GetComponent<NoteCardScript>();
 
-            //Place le systeme de particule a l'endroit de l'objet
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(m_RectTransform.position);
+			//Place le systeme de particule a l'endroit de l'objet
+			Vector3 worldPos = Camera.main.ScreenToWorldPoint(m_RectTransform.position);
 			worldPos.z = 0;
 			particle.transform.position = worldPos;
 
@@ -50,18 +58,19 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 				data.resetvalues();											//Remet en place les valeurs de la noteCard
 				data.draggable = false;										//Desactive le systeme de drag de la noteCard
 				pfxMain.startColor = Color.green;							//Mets la couleur du systeme de particule en vert
-				MidiHandler.Instance.launchCustomNote(note);					//Lance la demarche pour jouer la note
+				MidiHandler.Instance.launchNote(note, -1);					//Lance la demarche pour jouer la note
 				GameManager.Instance.setValidedNote(note);					//Valide la bonne reponse aupres du GameManager
 				GetComponent<AudioSource>().PlayOneShot(goodsoundEffect);	//Joue l'audio de bonne reponse
 			}
 			else
 			{
 				pfxMain.startColor = Color.red;								//Mets la couleur du systeme de particule en rouge
-                GetComponent<AudioSource>().PlayOneShot(badsoundEffect);	//Joue l'audio de mauvaise reponse
-            }
+				GetComponent<AudioSource>().PlayOneShot(badsoundEffect);	//Joue l'audio de mauvaise reponse
+			}
 
 			//Lance l'animation du systeme de particule
 			particle.Play();
 		}
 	}
+	#endregion
 }

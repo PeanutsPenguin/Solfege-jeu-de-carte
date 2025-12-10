@@ -58,7 +58,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	public void OnPointerDown(PointerEventData eventData)
 	{
         if (playable)
-			MidiHandler.Instance.launchCustomNote(note);
+			MidiHandler.Instance.launchNote(note, -1);
     }
 
 	public E_NOTE getNote()
