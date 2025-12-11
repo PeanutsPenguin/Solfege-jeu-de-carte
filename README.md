@@ -40,7 +40,9 @@ La première idée qui m'est venu en tête était de crée une sorte de jeu de c
 https://github.com/user-attachments/assets/3fec137b-a636-4789-bf27-747eda77b167
 
 ## Seconde itération
-J'ai vite compris que cela n'était pas très clair donc j'ai decide de rajouter un code couleur et des explications afin de comprendre que ce qu'il fallait faire.\
+J'ai vite compris que cela n'était pas très clair donc j'ai decide de rajouter un code couleur et des explications afin de comprendre que ce qu'il fallait faire.
+\
+\
 <img width="1919" height="1079" alt="SecondIteration" src="https://github.com/user-attachments/assets/49b8199f-28d9-4ee1-9c73-16b1712ee64f" />
 
 ## Troisième itération
