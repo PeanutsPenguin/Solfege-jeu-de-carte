@@ -40,7 +40,7 @@ La première idée qui m'est venu en tête était de crée une sorte de jeu de c
 https://github.com/user-attachments/assets/3fec137b-a636-4789-bf27-747eda77b167
 
 ## Seconde itération
-J'ai vite compris que cela n'était pas très clair donc j'ai decide de rajouter un code couleur et des explications afin de comprendre que ce qu'il fallait faire. 
+J'ai vite compris que cela n'était pas très clair donc j'ai decide de rajouter un code couleur et des explications afin de comprendre que ce qu'il fallait faire.\
 <img width="1919" height="1079" alt="SecondIteration" src="https://github.com/user-attachments/assets/49b8199f-28d9-4ee1-9c73-16b1712ee64f" />
 
 ## Troisième itération
@@ -57,10 +57,10 @@ Voici donc le rendu final du jeu :
 
 https://github.com/user-attachments/assets/de4bbdb5-e142-451a-a8a6-d2a533c55141
 
-Ce n'est que le niveau 1 donc n'heistez pas à installer la build et tester par vous même !
+Ce n'est que le niveau 1 donc n'hesitez pas à installer la build et tester par vous même !
 
 ## MidiHandler
-Ce que toutes ces itérations ne montrent pas c'est le MidiHandler. La base ce ce projet est de pouvoir lire des fichiers Midi est de les jouer. Un fichier Midi est un fichier contenant la "data" d'une musique : 
+Ce que toutes ces itérations ne montrent pas c'est le MidiHandler. La base ce ce projet est de pouvoir lire des fichiers Midi et de les jouer. Un fichier Midi est un fichier contenant la "data" d'une musique : 
 quelle note est jouée, à quel moment, à quelle intensité, quel octave, le bpm de la musique ect...\
 Ce programme permet donc de lire et jouer ce genre de fichier (en utilisant la librairie DryWetMidi).
 Lorsqu'un fichier est joué je récupère chaque évènement et si une note doit être joué alors je lance un son en fonction de la note !
