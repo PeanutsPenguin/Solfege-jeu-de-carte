@@ -255,12 +255,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_name: {fileID: 5003583830342133951}
+  draggable: 1
+  playable: 0
   m_Canvas: {fileID: 0}
   note: 0
   m_bottomLeftCorner: {fileID: 2699732635438586898}
   m_topRightCorner: {fileID: 1884866098014586020}
-  draggable: 1
-  playable: 0
 --- !u!1 &6941634678624914172
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +327,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 0a9080e31fce39f41b9c2ce6df680f6d, type: 3}
     m_FontSize: 33
     m_FontStyle: 0
     m_BestFit: 0

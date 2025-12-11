@@ -2,6 +2,9 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Enum afin de definir les note 
+/// </summary>
 public enum E_NOTE : int
 {
     E_DO = 0, 
@@ -17,6 +20,9 @@ namespace NoteValues
 {
     class NoteValuesHandler
     {
+        /// <summary>
+        /// Retourne le bon texte en fonction de la note
+        /// </summary>
         public static string SetNoteText(E_NOTE note)
         {
             switch (note)
@@ -28,7 +34,6 @@ namespace NoteValues
                 case E_NOTE.E_MI:
                     return "MI";
                 case E_NOTE.E_FA:
-
                     return "FA";
                 case E_NOTE.E_SOL:
                     return "SOL";
@@ -41,6 +46,9 @@ namespace NoteValues
             return "DO";
         }
 
+        /// <summary>
+        /// Retourne la bonne couleur en fonction de la note (base sur les couleurs de l'arc en ciel)
+        /// </summary>
         public static Color setNoteColor(E_NOTE note)
         {
             switch (note)

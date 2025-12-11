@@ -12,11 +12,13 @@ public class MusicNoteScriptVF : MonoBehaviour
     private float m_canvaScale;
     #endregion
 
+    //Find the component
     public void Awake()
     {
         m_RectTransform = GetComponent<RectTransform>();
     }
 
+    //Move constantly to the right until a certain position
     public void Update()
     {
         if (m_RectTransform.localPosition.x > 1800 * m_canvaScale)
@@ -29,6 +31,7 @@ public class MusicNoteScriptVF : MonoBehaviour
         m_RectTransform.localPosition = new Vector3(m_RectTransform.localPosition.x + speed, m_RectTransform.localPosition.y, 0);
     }
 
+    //Set Right value
     public void setCanvaScale(float scale)
     {
         m_canvaScale = scale;

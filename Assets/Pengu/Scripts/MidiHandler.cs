@@ -18,7 +18,7 @@ public class MidiHandler : MonoBehaviour
     #endregion
 
     #region Champs Prive
-    private Dictionary<int, AudioSource> activeNotes    = new Dictionary<int, AudioSource>();           //Array de note entrain d'etre jouee
+    private Dictionary<int, AudioSource> activeNotes        = new Dictionary<int, AudioSource>();       //Array de note entrain d'etre jouee
     private Queue<NoteEvent> noteEventQueue                 = new Queue<NoteEvent>();                   //Queue stockant les notes a envoyer sur le main thread
     private readonly object queueLock                       = new object();                             //Object permettant de bloquer l'ecriture de la queue
     private int m_noteOnScreen                              = 0;                                        //Note actuellement sur l'ecran
@@ -142,6 +142,9 @@ public class MidiHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Baisse le volume de la note petit a petit puis la detruit
+    /// </summary>
     System.Collections.IEnumerator FadeOutAndDestroy(AudioSource src)
     {
         float vol = src.volume;
@@ -170,11 +173,13 @@ public class MidiHandler : MonoBehaviour
             stopNote((int)note);
         }
 
+        //Cree un compoenent AudioSource et joue la note de piano correspondante
         AudioSource src = gameObject.AddComponent<AudioSource>();
         src.clip = pianoNotes[(int)note];
         src.volume = vel / 127f;
         src.Play();
         activeNotes[(int)note] = src;
+        GameManager.Instance.StartTextAnimation(note);
 
         //Instancie la note
         GameObject newNote = GameObject.Instantiate(MusicNotePrefab, musicNoteStocker.transform);

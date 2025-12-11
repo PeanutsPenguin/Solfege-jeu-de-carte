@@ -1,23 +1,31 @@
 using NoteValues;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-//Utilisation des evenements deja creer par unity afin de gerer le Drag and Drop des carte notes
-public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler		//<-"Built-in Class" afin de gerer le drag and drop
 {
-	private RectTransform m_RectTransform;
-	private CanvasGroup m_CanvasGroup;
-    public Text m_name;
-    [SerializeField] private Canvas m_Canvas;
-	[SerializeField] private E_NOTE note;
+    #region Champs publique
+    [Tooltip("Text afficahnt la note")]											public Text m_name;
+    [Tooltip("Est que la carte est draggable ?")]								public bool draggable = true;
+    [Tooltip("Est ce que la carte doit jouer la note en appuyant dessus ?")]	public bool playable = false;
+    #endregion
 
-    [SerializeField] private Image m_bottomLeftCorner;
-    [SerializeField] private Image m_topRightCorner;
+    #region Champs Serialize
+    [Tooltip("Canva qui contient la carte")][SerializeField]		private Canvas m_Canvas;
+    [Tooltip("Note de la carte")][SerializeField]					private E_NOTE note;
+    [Tooltip("Image du coin en bas a gauvhe")][SerializeField]		private Image m_bottomLeftCorner;
+    [Tooltip("Image du coin en haut a droite")][SerializeField]		private Image m_topRightCorner;
+    #endregion
 
-    public bool draggable = true;
-	public bool playable = false;
+    #region Champs prives
+    private RectTransform m_RectTransform;
+    private CanvasGroup m_CanvasGroup;
+    #endregion
 
+    #region UNITY Methods
+    //Defini les bonnes valeurs
     private void Awake()
 	{
 		m_RectTransform = GetComponent<RectTransform>();
@@ -27,9 +35,19 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 		m_bottomLeftCorner.color = color;
 		m_topRightCorner.color = color;
 	}
+    #endregion
 
-	//Au commencement du drag
-	public void OnBeginDrag(PointerEventData eventData)
+    #region Drag and Drop
+    //Au moment du clic sur l'objet 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        //Lorsque la note est "playable" joue la note correspondante au clic
+        if (playable)
+            MidiHandler.Instance.launchNote(note, 100);
+    }
+
+    //Au commencement du drag
+    public void OnBeginDrag(PointerEventData eventData)
 	{
         if (!draggable)
 			return;
@@ -56,17 +74,14 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
         if (!draggable)
             return;
 
-		resetvalues();
-	}
-
-	//Au moment du clic sur l'objet 
-	public void OnPointerDown(PointerEventData eventData)
-	{
-        if (playable)
-			MidiHandler.Instance.launchNote(note, 100);
+        //Remets les valeurs de l'image a la normal
+        m_CanvasGroup.alpha = 1;
+        m_CanvasGroup.blocksRaycasts = true;
     }
+    #endregion
 
-	public E_NOTE getNote()
+    #region Carte
+    public E_NOTE getNote()
 	{
 		return note;
 	}
@@ -81,4 +96,5 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
         color.a = 255;
         img.color = color;
     }
+    #endregion
 }

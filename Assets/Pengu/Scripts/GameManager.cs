@@ -13,37 +13,44 @@ struct ClearNotes
 
 public class GameManager : MonoBehaviour
 {
+    #region Champs
     public static GameManager Instance { get; private set; }                                            //Instance du GameManager
 
-    //Level
-    private int         m_level                 = 1;                                                    //Niveau actuel
-    private ClearNotes  m_levelValues           = new ClearNotes();                                     //Conditions de victoire du niveau
-    private bool        levelCleared            = false;                                                //Est ce que le niveau a etait complete ?
-    private bool        playingEndMusic         = false;                                                //Est ce que la musique de fin de niveau est en train d'etre jouee ?
+    #region Level
+    private int             m_level                 = 1;                                                    //Niveau actuel
+    private ClearNotes      m_levelValues           = new ClearNotes();                                     //Conditions de victoire du niveau
+    private bool            levelCleared            = false;                                                //Est ce que le niveau a etait complete ?
+    private bool            playingEndMusic         = false;                                                //Est ce que la musique de fin de niveau est en train d'etre jouee ?
+    public ParticleSystem   endLevelParticles;
+    #endregion
 
-    //Text
+    #region Text
     public Text         textLevel;                                                                      //Texte du titre du niveau
     public Text         textLevelDescription;                                                           //Texte de la description du niveau
+    #endregion
 
-    //GameObjects
+    #region GameObjects
     public GameObject   noteCardStocker;                                                                //Reference a l'objet contenant toutes les noteCard
     public GameObject   cardEmplacementStocker;                                                         //Reference a l'objet contenant tout les emplacement de carte
+    #endregion
 
-    //Curtain
+    #region Curtain
     public GameObject   curtain;                                                                        //Reference au rideau
     private bool        curtainRaised           = false;                                                //Est ce que le rideau est leve ?
     private bool        moveCurtain             = false;                                                //Est ce que le rideau doit bouger ?
     public float        curtainspeed            = 100;                                                  //Vitesse de mouvement du rideau
     public float        beginTimer              = 0.5f;                                                 //Lorce que le rideau se leve, temps qu'il met a descendre puis se leve (effet plus realiste)
     private float       beginCounter            = 0;                                                    //Depuis quand le rideau se baisse
+    #endregion
 
-    //Audio
+    #region Audio
     public string       level1MsuciWin          = "Assets/Pengu/Assets/Midi/BasicTetrisTheme.mid";      //Musique de fin de niveau 1
     public string       level2MsuciWin          = "Assets/Pengu/Assets/Midi/lvl2Music.mid";             //Musique de fin de niveau 1
     public string       level3MsuciWin          = "Assets/Pengu/Assets/Midi/lvl3Music.mid";             //Musique de fin de niveau 1
+    #endregion
 
     private Canvas mainCanva;                                                                           //Reference au canva 
-
+    #endregion
 
     #region UNITY METHODS
     //Creation de l'instance
@@ -105,7 +112,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();
 
         //Mise en place du texte
-        textLevel.text = "Level un :";
+        textLevel.text = "Level 1 :";
         textLevelDescription.text = "Relis chaque note a son bon emplacement sur la portée !";
 
         moveCurtain = true;                         //Leve le rideau
@@ -123,17 +130,17 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level deux :";
-        textLevelDescription.text = "Te souviens-tu de ou etait place les notes ?";
+        textLevel.text = "Level 2 :";
+        textLevelDescription.text = "Te souviens-tu de oú était placée les notes ?";
 
         moveCurtain = true;                         //Leve le rideau
         levelCleared = false;                       //Niveau fini = faux
 
         //Reecupere tout les script d'emplacements de carte depuis le stocker
-        CareEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CareEmplacementScript>();
+        CardEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CardEmplacementScript>();
 
         //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
-        foreach (CareEmplacementScript sc in arr)
+        foreach (CardEmplacementScript sc in arr)
         {
             Color transparent = new Color();        
             transparent.a = 0;
@@ -153,17 +160,17 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level trois :";
+        textLevel.text = "Level 3 :";
         textLevelDescription.text = "Plus difficile encore ! As-tu bien appris ?";
 
         moveCurtain = true;                         //Leve le rideau
         levelCleared = false;                       //Niveau fini = faux
 
         //Reecupere tout les script d'emplacements de carte depuis le stocker
-        CareEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CareEmplacementScript>();
+        CardEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CardEmplacementScript>();
 
         //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
-        foreach (CareEmplacementScript sc in arr)
+        foreach (CardEmplacementScript sc in arr)
         {
             Color transparent = new Color();
             transparent.a = 0;
@@ -184,7 +191,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level quatre :";
+        textLevel.text = "Level 4 :";
         textLevelDescription.text = "BRAVO ! Maintenant libre a toi de jouer ce que tu veux, appuie sur les notes afin de les jouer !";
 
         moveCurtain = true;                         //Leve le rideau
@@ -216,7 +223,8 @@ public class GameManager : MonoBehaviour
 
                 Debug.Log("LEVEL CLEARED");
                 levelCleared = true;                        //Niveau fini
-                m_level++;                                  //Niveau suivamt
+                m_level++;                                  //Niveau suivant
+                endLevelParticles.Play();                   //Joue les particules de fin de niveau
                 break;
         }
     }
@@ -250,6 +258,19 @@ public class GameManager : MonoBehaviour
             sc.draggable = true;
 
             posList.Remove(posList[index]);
+        }
+    }
+
+    public void StartTextAnimation(E_NOTE note)
+    {
+        //Reecupere tout les script d'emplacements de carte depuis le stocker
+        CardEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CardEmplacementScript>();
+
+        //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
+        foreach (CardEmplacementScript sc in arr)
+        {
+            if (sc.getNote() == note)
+                sc.StartTextAnimation();
         }
     }
     #endregion
