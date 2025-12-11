@@ -7,14 +7,14 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 {
     #region Champs publique
     [Tooltip("Texte ecrit dans l'emplacement de carte")]					public Text m_name;
-	[Tooltip("Image de couleur de l'emplacement de carte")]					public Image m_colorImage;
 	[Tooltip("Particle system joue lors d'une bonne/mauvaise reponse")]		public ParticleSystem particle;                     
 	[Tooltip("Audio joue lors d'une bonne reponse")]						public AudioClip goodsoundEffect;                   
 	[Tooltip("Audio joue lors d'une mauvaise reponse")]						public AudioClip badsoundEffect;
     #endregion
 
     #region Champs serialize
-    [Tooltip("Image de fond de l'emplacement de carte")][SerializeField]	private Image m_backGround;
+    [Tooltip("Image de coin de l'emplacement de carte")][SerializeField]	private Image m_toprightCorner;
+    [Tooltip("Image de coin de l'emplacement de carte")][SerializeField]	private Image m_bottomLeftCorner;
     [Tooltip("Note de l'emplacemetn de carte")][SerializeField]				private E_NOTE note;               
     #endregion
 
@@ -28,7 +28,7 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 		//Mise en place des valeurs
 		m_RectTransform = GetComponent<RectTransform>();
 		m_name.text = NoteValuesHandler.SetNoteText(note);
-		m_backGround.color = NoteValuesHandler.setNoteColor(note);
+        SetCornersColor(NoteValuesHandler.setNoteColor(note));
 	}
     #endregion
 
@@ -57,10 +57,12 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 			{
 				data.resetvalues();											//Remet en place les valeurs de la noteCard
 				data.draggable = false;										//Desactive le systeme de drag de la noteCard
+				m_toprightCorner.transform.SetParent(data.transform, false);
+				m_bottomLeftCorner.transform.SetParent(data.transform, false);
 				pfxMain.startColor = Color.green;							//Mets la couleur du systeme de particule en vert
-				MidiHandler.Instance.launchNote(note, -1);					//Lance la demarche pour jouer la note
+				MidiHandler.Instance.launchNote(note, 100);					//Lance la demarche pour jouer la note
 				GameManager.Instance.setValidedNote(note);					//Valide la bonne reponse aupres du GameManager
-				GetComponent<AudioSource>().PlayOneShot(goodsoundEffect);	//Joue l'audio de bonne reponse
+				//GetComponent<AudioSource>().PlayOneShot(goodsoundEffect);	//Joue l'audio de bonne reponse
 			}
 			else
 			{
@@ -72,5 +74,19 @@ public class CareEmplacementScript : MonoBehaviour, IDropHandler
 			particle.Play();
 		}
 	}
+	#endregion
+
+	#region Corners
+	public void SetCornersColor(Color color)
+	{
+        m_toprightCorner.color = color;
+        m_bottomLeftCorner.color = color;
+    }
+
+	public void resetCornersParenting()
+	{
+        m_toprightCorner.transform.SetParent(gameObject.transform, false);
+        m_bottomLeftCorner.transform.SetParent(gameObject.transform, false);
+    }
 	#endregion
 }

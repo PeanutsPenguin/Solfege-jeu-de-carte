@@ -12,7 +12,10 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
     [SerializeField] private Canvas m_Canvas;
 	[SerializeField] private E_NOTE note;
 
-	public bool draggable = true;
+    [SerializeField] private Image m_bottomLeftCorner;
+    [SerializeField] private Image m_topRightCorner;
+
+    public bool draggable = true;
 	public bool playable = false;
 
     private void Awake()
@@ -20,7 +23,9 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 		m_RectTransform = GetComponent<RectTransform>();
 		m_CanvasGroup = GetComponent<CanvasGroup>();
 		m_name.text = NoteValuesHandler.SetNoteText(note);
-		GetComponent<Image>().color = NoteValuesHandler.setNoteColor(note);
+		Color color = NoteValuesHandler.setNoteColor(note);
+		m_bottomLeftCorner.color = color;
+		m_topRightCorner.color = color;
 	}
 
 	//Au commencement du drag
@@ -58,7 +63,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
 	public void OnPointerDown(PointerEventData eventData)
 	{
         if (playable)
-			MidiHandler.Instance.launchNote(note, -1);
+			MidiHandler.Instance.launchNote(note, 100);
     }
 
 	public E_NOTE getNote()
@@ -71,5 +76,9 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
         //Remet l'image a la normal
         m_CanvasGroup.alpha = 1;
         m_CanvasGroup.blocksRaycasts = true;
+        Image img = GetComponent<Image>();
+        Color color = img.color;
+        color.a = 255;
+        img.color = color;
     }
 }

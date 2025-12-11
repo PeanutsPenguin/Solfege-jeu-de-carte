@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -103,7 +105,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();
 
         //Mise en place du texte
-        textLevel.text = "Level 1 :";
+        textLevel.text = "Level un :";
         textLevelDescription.text = "Relis chaque note a son bon emplacement sur la portée !";
 
         moveCurtain = true;                         //Leve le rideau
@@ -121,7 +123,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level 2 :";
+        textLevel.text = "Level deux :";
         textLevelDescription.text = "Te souviens-tu de ou etait place les notes ?";
 
         moveCurtain = true;                         //Leve le rideau
@@ -136,6 +138,7 @@ public class GameManager : MonoBehaviour
             Color transparent = new Color();        
             transparent.a = 0;
             sc.m_name.color = transparent;
+            sc.resetCornersParenting();
         }
 
         //Melange les notes Cards
@@ -150,7 +153,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level 3 :";
+        textLevel.text = "Level trois :";
         textLevelDescription.text = "Plus difficile encore ! As-tu bien appris ?";
 
         moveCurtain = true;                         //Leve le rideau
@@ -165,7 +168,8 @@ public class GameManager : MonoBehaviour
             Color transparent = new Color();
             transparent.a = 0;
             sc.m_name.color = transparent;
-            sc.m_colorImage.color = transparent;
+            sc.SetCornersColor(transparent);
+            sc.resetCornersParenting();
         }
 
         //Melange les notes Cards
@@ -180,7 +184,7 @@ public class GameManager : MonoBehaviour
         resetLevelValues();     //Reinitialise les valeurs du niveau
 
         //Mise en place du texte
-        textLevel.text = "Level 4 :";
+        textLevel.text = "Level quatre :";
         textLevelDescription.text = "BRAVO ! Maintenant libre a toi de jouer ce que tu veux, appuie sur les notes afin de les jouer !";
 
         moveCurtain = true;                         //Leve le rideau
@@ -224,14 +228,28 @@ public class GameManager : MonoBehaviour
         //Reecupere tout les script de noteCard depuis le stocker
         NoteCardScript[] arr2 = noteCardStocker.GetComponentsInChildren<NoteCardScript>();
 
-        //Prends une position semi-aleatoire et place les noteCard
+        List<int> posList = new List<int>();
+
+        posList.Add(-119);
+        posList.Add(-19);
+        posList.Add(79);
+        posList.Add(179);
+        posList.Add(279);
+        posList.Add(379);
+        posList.Add(479);
+
         foreach (NoteCardScript sc in arr2)
         {
-            int posX = Random.Range(-350, 350);//(TODO: !nombre hardcode) 
-            int posY = Random.Range(-100, 100);//(TODO: !nombre hardcode) 
+            int index = Random.Range(0, posList.Count);
 
-            sc.gameObject.GetComponent<RectTransform>().localPosition = new Vector3(posX, posY, 0);
+            sc.gameObject.GetComponent<RectTransform>().localPosition = new Vector3(posList[index], 0, 0);
+            Image img = sc.gameObject.GetComponent<Image>();
+            Color color = img.color;
+            color.a = 100;
+            img.color = color;
             sc.draggable = true;
+
+            posList.Remove(posList[index]);
         }
     }
     #endregion

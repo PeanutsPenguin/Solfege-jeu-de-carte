@@ -1,7 +1,9 @@
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MidiHandler : MonoBehaviour
 {
@@ -16,7 +18,7 @@ public class MidiHandler : MonoBehaviour
     #endregion
 
     #region Champs Prive
-    private Dictionary<int, MusicNoteScript> activeNotes    = new Dictionary<int, MusicNoteScript>();   //Array de note entrain d'etre jouee
+    private Dictionary<int, AudioSource> activeNotes    = new Dictionary<int, AudioSource>();           //Array de note entrain d'etre jouee
     private Queue<NoteEvent> noteEventQueue                 = new Queue<NoteEvent>();                   //Queue stockant les notes a envoyer sur le main thread
     private readonly object queueLock                       = new object();                             //Object permettant de bloquer l'ecriture de la queue
     private int m_noteOnScreen                              = 0;                                        //Note actuellement sur l'ecran
@@ -133,11 +135,26 @@ public class MidiHandler : MonoBehaviour
     /// <param name="midiNote">Note</param>
     void stopNote(int midiNote)
     {
-        if (activeNotes.TryGetValue(midiNote, out MusicNoteScript src))
+        if (activeNotes.TryGetValue(midiNote, out AudioSource src))
         {
-            src.stopDurability();
+            StartCoroutine(FadeOutAndDestroy(src));
             activeNotes.Remove(midiNote);
         }
+    }
+
+    System.Collections.IEnumerator FadeOutAndDestroy(AudioSource src)
+    {
+        float vol = src.volume;
+        float fadeTime = 0.07f;
+        float t = 0f;
+        while (t < fadeTime)
+        {
+            src.volume = Mathf.Lerp(vol, 0f, t / fadeTime);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        src.Stop();
+        Destroy(src);
     }
 
     /// <summary>
@@ -149,7 +166,15 @@ public class MidiHandler : MonoBehaviour
     {
         //TODO: Verifier comment est-ce possible d'avoir plusieurs fois la MEME note qui se joue en MEME temps (theorie : multithread)
         if (activeNotes.ContainsKey((int)note))
-            return;
+        {
+            stopNote((int)note);
+        }
+
+        AudioSource src = gameObject.AddComponent<AudioSource>();
+        src.clip = pianoNotes[(int)note];
+        src.volume = vel / 127f;
+        src.Play();
+        activeNotes[(int)note] = src;
 
         //Instancie la note
         GameObject newNote = GameObject.Instantiate(MusicNotePrefab, musicNoteStocker.transform);
@@ -164,24 +189,10 @@ public class MidiHandler : MonoBehaviour
         rt.anchoredPosition = newrt.anchoredPosition;
 
         //Recupere le script de la note
-        MusicNoteScript newNoteScript = newNote.GetComponent<MusicNoteScript>();
+        MusicNoteScriptVF newNoteScript = newNote.GetComponent<MusicNoteScriptVF>();
 
         //Met en place les bonnes valeurs
-        newNoteScript.note = note;
-        newNoteScript.canvaScale = mainCanva.scaleFactor;
-        newNoteScript.setAudioClip(pianoNotes[(int)note]);
-
-        if(vel == -1)       //(Vel == -1) veut dire que cette note ne provient pas d'un fichier midi, elle est lance manuellement 
-        {
-            newNoteScript.durability = 1f;
-            newNoteScript.stopDurability();
-        }
-        else
-        {
-            newNoteScript.setVolume(vel / 127f);
-            activeNotes[(int)note] = newNoteScript;
-
-        }
+        newNoteScript.setCanvaScale(mainCanva.scaleFactor);
 
         //Increment le compteur de note a l'ecran
         AddNoteOnScreenCounter();

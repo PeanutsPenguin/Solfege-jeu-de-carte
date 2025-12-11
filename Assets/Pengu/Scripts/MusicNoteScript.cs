@@ -21,13 +21,6 @@ public class MusicNoteScript : MonoBehaviour
     private AudioSource m_AudioSource;
     #endregion
 
-    private void Awake()
-    {
-        m_RectTransform = GetComponent<RectTransform>();
-        m_Image = GetComponent<Image>();
-        m_AudioSource = GetComponent<AudioSource>();
-    }
-
     public void Update()
     {
         if (m_isWaiting)
@@ -79,6 +72,13 @@ public class MusicNoteScript : MonoBehaviour
         }
         m_AudioSource.Stop();
         Destroy(gameObject);
+    }
+
+    public void init()
+    {
+        m_RectTransform = GetComponent<RectTransform>();
+        m_Image = GetComponent<Image>();
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     public void stopDurability()
