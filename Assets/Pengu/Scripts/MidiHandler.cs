@@ -2,6 +2,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Multimedia;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -78,10 +79,9 @@ public class MidiHandler : MonoBehaviour
     #region process midi files
     public void LoadMidi(string fileName)
     {
-        if(m_isPlaying)
-            return;
-
-        midiFile = MidiFile.Read(fileName);
+        string path = Path.Combine(Application.dataPath, fileName);
+        Debug.Log("Loading MIDI file from: " + path);
+        midiFile = MidiFile.Read(path);
     }
    
     /// <summary>
@@ -89,6 +89,9 @@ public class MidiHandler : MonoBehaviour
     /// </summary>
     public void StartPlayback()
     {
+        if (m_isPlaying)
+            return;
+
         playback = midiFile.GetPlayback();
         playback.EventPlayed += OnMidiEvent;
         m_isPlaying = true;

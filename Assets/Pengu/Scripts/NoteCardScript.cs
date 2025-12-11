@@ -42,7 +42,7 @@ public class NoteCardScript : MonoBehaviour, IPointerDownHandler, IBeginDragHand
     public void OnPointerDown(PointerEventData eventData)
     {
         //Lorsque la note est "playable" joue la note correspondante au clic
-        if (playable)
+        if (playable && !MidiHandler.Instance.m_isPlaying)
             MidiHandler.Instance.launchNote(note, 100);
     }
 

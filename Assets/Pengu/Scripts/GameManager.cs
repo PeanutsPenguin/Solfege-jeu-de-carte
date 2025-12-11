@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     #region GameObjects
     public GameObject   noteCardStocker;                                                                //Reference a l'objet contenant toutes les noteCard
     public GameObject   cardEmplacementStocker;                                                         //Reference a l'objet contenant tout les emplacement de carte
+    public GameObject   dropDownStocker;                                                                //Reference a l'objet contenant le dropdown de selection de musique
+    public GameObject   noteText;                                                                       //Reference a l'objet contenant le texte "Notes :"           
     #endregion
 
     #region Curtain
@@ -44,9 +46,16 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Audio
-    public string       level1MsuciWin          = "Assets/Pengu/Assets/Midi/BasicTetrisTheme.mid";      //Musique de fin de niveau 1
-    public string       level2MsuciWin          = "Assets/Pengu/Assets/Midi/lvl2Music.mid";             //Musique de fin de niveau 1
-    public string       level3MsuciWin          = "Assets/Pengu/Assets/Midi/lvl3Music.mid";             //Musique de fin de niveau 1
+    public string       level1MsuciWin          = "StreamingAssets/BasicTetrisTheme.mid";      //Musique de fin de niveau 1
+    public string       level2MsuciWin          = "StreamingAssets/lvl2Music.mid";             //Musique de fin de niveau 2
+    public string       level3MsuciWin          = "StreamingAssets/lvl3Music.mid";             //Musique de fin de niveau 3
+
+    [Header("Dropdown Music")]
+    public string       dropdown1 = "StreamingAssets/AuClairDeLaLune.mid";      
+    public string       dropdown2 = "StreamingAssets/lvl2Music.mid";             
+    public string       dropdown3 = "StreamingAssets/lvl3Music.mid";
+    public string       dropdown4 = "StreamingAssets/BasicTetrisTheme.mid";
+    public string       dropdown5 = "StreamingAssets/SmallItemZeldaTP.mid";
     #endregion
 
     private Canvas mainCanva;                                                                           //Reference au canva 
@@ -68,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        m_levelValues.m_clearNotes = new bool[7];
         createLevel1();                                                                     //Creation du niveau 1
         mainCanva = GameObject.FindGameObjectWithTag("MainCanva").GetComponent<Canvas>();   //Obtention du Canva grace a un tag
     }
@@ -106,6 +116,14 @@ public class GameManager : MonoBehaviour
             m_levelValues.m_clearNotes[i] = false;  //Mets toutes les notes a "faux"
     }
 
+    public void resetAllLevel()
+    {
+        if (levelCleared || MidiHandler.Instance.m_isPlaying || m_level == 4)
+            return;
+
+        resetLevelValues();
+        shuffleNoteCards();
+    }
     public void createLevel1() 
     {
         m_levelValues.m_clearNotes = new bool[7];   //Tableau de taille fixe pour chaque note (TODO : !nombre hardcode) 
@@ -202,7 +220,11 @@ public class GameManager : MonoBehaviour
 
         foreach (NoteCardScript sc in arr2)
             sc.playable = true;
+
         playingEndMusic = false;
+        noteText.SetActive(false);
+        dropDownStocker.SetActive(true);
+        MidiHandler.Instance.LoadMidi(dropdown1);
     }
 
     public void setValidedNote(E_NOTE note)
@@ -259,6 +281,12 @@ public class GameManager : MonoBehaviour
 
             posList.Remove(posList[index]);
         }
+
+        CardEmplacementScript[] arr = cardEmplacementStocker.GetComponentsInChildren<CardEmplacementScript>();
+
+        //Cree une couleur transparente et l'associe a chaque texte des emplacements de carte afin de ne plus les voirs
+        foreach (CardEmplacementScript sc in arr)
+            sc.resetCornersParenting();
     }
 
     public void StartTextAnimation(E_NOTE note)
@@ -324,6 +352,36 @@ public class GameManager : MonoBehaviour
                     createLevel4();
             }
         }
+    }
+    #endregion
+
+    #region Dropdown + Play button 
+
+    public void onDropdownValueChanged(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                MidiHandler.Instance.LoadMidi(dropdown1);
+                break;
+            case 1:
+                MidiHandler.Instance.LoadMidi(dropdown2);
+                break;
+            case 2:
+                MidiHandler.Instance.LoadMidi(dropdown3);
+                break;
+            case 3:
+                MidiHandler.Instance.LoadMidi(dropdown4);
+            break;
+            case 4:
+                MidiHandler.Instance.LoadMidi(dropdown5);
+            break;
+        }
+    }
+
+    public void onPlayButtonPressed()
+    {
+        MidiHandler.Instance.StartPlayback();
     }
     #endregion
 }
